@@ -3,93 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <title>Automação de Switch Cisco - Mercado Livre</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        h1 { color: #2d3277; }
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        label { font-weight: bold; display: block; margin-top: 10px; }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 6px;
-            margin-top: 4px;
-            box-sizing: border-box;
-        }
-        .vlan-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        .vlan-row input { flex: 1; }
-        button {
-            background-color: #2d3277;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-size: 15px;
-        }
-        button:hover { background-color: #40469c; }
-        .sucesso { color: #1a7a3c; font-weight: bold; }
-        .erro { color: #b00020; font-weight: bold; }
-        .alerta { color: #b06000; }
-        ul { padding-left: 20px; }
-    </style>
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #eef1fb 0%, #f7f8fc 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #1c1e3a;
+    }
+
+    .topbar {
+        background: #2d3277;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .topbar .badge {
+        width: 42px;
+        height: 42px;
+        background: #FFE600;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .topbar h1 {
+        color: white;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .topbar .subtitle {
+        color: #c9cbf0;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+    }
+
+    .container {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 36px 20px;
+    }
+
+    .card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 4px 16px rgba(45, 50, 119, 0.08);
+        margin-bottom: 24px;
+        border: 1px solid #eceefb;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #FFE600, #3483FA);
+    }
+
+    .card h2 {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6b6f95;
+        margin: 0 0 18px 0;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-top: 16px;
+        font-size: 14px;
+        color: #2d3277;
+    }
+
+    input[type="text"], input[type="number"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 6px;
+        border: 1px solid #d7d9ec;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus {
+        outline: none;
+        border-color: #3483FA;
+        box-shadow: 0 0 0 3px rgba(52, 131, 250, 0.15);
+    }
+
+    .vlan-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        align-items: center;
+    }
+
+    .vlan-badge {
+        background: #FFE600;
+        color: #2d3277;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 8px;
+    }
+
+    .vlan-row input[name="vlan_id"] { flex: 0 0 100px; }
+    .vlan-row input[name="vlan_nome"] { flex: 1; }
+
+    button {
+        background: linear-gradient(90deg, #3483FA, #2d3277);
+        color: white;
+        border: none;
+        padding: 13px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 24px;
+        font-size: 15px;
+        font-weight: 700;
+        transition: opacity 0.15s;
+        width: 100%;
+        letter-spacing: 0.3px;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    .resultado-sucesso::before { background: linear-gradient(90deg, #FFE600, #1a7a3c); }
+    .resultado-erro::before { background: linear-gradient(90deg, #FFE600, #b00020); }
+
+    .status-linha {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .sucesso { color: #1a7a3c; }
+    .erro { color: #b00020; }
+    .alerta-titulo { color: #b06000; font-weight: 700; margin-top: 16px; }
+
+    .backup-path {
+        background: #f5f6fc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-family: 'Consolas', monospace;
+        font-size: 13px;
+        margin-top: 6px;
+        display: inline-block;
+        border-left: 3px solid #3483FA;
+    }
+
+    ul { padding-left: 20px; margin-top: 8px; }
+    ul li { color: #b06000; margin-bottom: 4px; font-size: 14px; }
+
+    footer {
+        text-align: center;
+        color: #a1a4c4;
+        font-size: 12px;
+        margin-top: 32px;
+        padding-bottom: 20px;
+    }
+</style>
 </head>
 <body>
-    <h1>🔧 Automação de Switch Cisco</h1>
-    <p>Laboratório de Candidatos - Networking Mercado Livre</p>
-
-    <div class="card">
-        <form action="/configurar" method="post">
-            <label for="hostname">Hostname desejado:</label>
-            <input type="text" id="hostname" name="hostname" value="{{ hostname }}">
-
-            <label>VLANs a configurar:</label>
-            {% for vlan in vlans %}
-            <div class="vlan-row">
-                <input type="number" name="vlan_id" value="{{ vlan.id }}" placeholder="ID da VLAN">
-                <input type="text" name="vlan_nome" value="{{ vlan.nome }}" placeholder="Nome da VLAN">
-            </div>
-            {% endfor %}
-
-            <button type="submit">Aplicar Configuração no Switch</button>
-        </form>
+    <div class="topbar">
+        <div class="badge">🤝</div>
+        <div>
+            <h1>Automação de Switch Cisco</h1>
+            <div class="subtitle">LABORATÓRIO DE CANDIDATOS — NETWORKING MERCADO LIVRE</div>
+        </div>
     </div>
 
-    {% if resultado %}
-    <div class="card">
-        {% if resultado.sucesso %}
-            <p class="sucesso">✅ {{ resultado.mensagem }}</p>
-            <p><strong>Backup salvo em:</strong> {{ resultado.backup_path }}</p>
+    <div class="container">
+        <div class="card">
+            <h2>Configuração Desejada</h2>
+            <form action="/configurar" method="post">
+                <label for="hostname">Hostname do switch</label>
+                <input type="text" id="hostname" name="hostname" value="{{ hostname }}">
 
-            {% if resultado.validacao.ok %}
-                <p class="sucesso">✅ Validação: configuração confere com o esperado.</p>
+                <label>VLANs a configurar <span class="vlan-badge">{{ vlans|length }} VLANs</span></label>
+                {% for vlan in vlans %}
+                <div class="vlan-row">
+                    <input type="number" name="vlan_id" value="{{ vlan.id }}" placeholder="ID">
+                    <input type="text" name="vlan_nome" value="{{ vlan.nome }}" placeholder="Nome da VLAN">
+                </div>
+                {% endfor %}
+
+                <button type="submit">⚡ Aplicar Configuração no Switch</button>
+            </form>
+        </div>
+
+        {% if resultado %}
+        <div class="card {{ 'resultado-sucesso' if resultado.sucesso else 'resultado-erro' }}">
+            {% if resultado.sucesso %}
+                <div class="status-linha sucesso">✅ {{ resultado.mensagem }}</div>
+                <p>Backup salvo em:<br><span class="backup-path">{{ resultado.backup_path }}</span></p>
+
+                {% if resultado.validacao.ok %}
+                    <div class="status-linha sucesso">✅ Validação: configuração confere com o esperado.</div>
+                {% else %}
+                    <div class="alerta-titulo">⚠️ Validação encontrou divergências:</div>
+                    <ul>
+                        {% for alerta in resultado.validacao.alertas %}
+                        <li>{{ alerta }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% else %}
-                <p class="alerta">⚠️ Validação encontrou divergências:</p>
-                <ul>
-                    {% for alerta in resultado.validacao.alertas %}
-                    <li class="alerta">{{ alerta }}</li>
-                    {% endfor %}
-                </ul>
+                <div class="status-linha erro">❌ {{ resultado.mensagem }}</div>
             {% endif %}
-        {% else %}
-            <p class="erro">❌ {{ resultado.mensagem }}</p>
+        </div>
         {% endif %}
+
+        <footer>Desafio de Automação — Frontend Flask + Netmiko</footer>
     </div>
-    {% endif %}
 </body>
 </html>
