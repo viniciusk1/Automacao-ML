@@ -49,17 +49,36 @@ def conectar_switch(params=None):
 # Configuracao de VLANs e hostname
 # ---------------------------------------------------------------------------
 def configurar_vlans(connection, vlans, hostname=None):
-    """Aplica VLANs e (opcionalmente) o hostname no switch."""
-    comandos = []
-    if hostname:
-        comandos.append(f"hostname {hostname}")
-    for vlan in vlans:
-        comandos.append(f"vlan {vlan['id']}")
-        comandos.append(f"name {vlan['nome']}")
-        comandos.append("exit")
-    saida = connection.send_config_set(comandos)
-    return saida
+    """
+    Aplica a configuracao de VLANs e (opcionalmente) o hostname no switch.
 
+    Importante: o hostname e alterado em uma etapa separada dos comandos
+    de VLAN. Isso e necessario porque, quando o hostname muda, o "prompt"
+    do switch tambem muda (ex: de "SW-LAB#" para "SWITCH_AUTOMATIZADO#").
+    O Netmiko usa o prompt para saber quando um comando terminou de
+    executar, entao precisamos avisar explicitamente que o prompt mudou
+    (com connection.set_base_prompt()) antes de continuar.
+    """
+    saida_completa = ""
+
+    # --- 1. Trocar o hostname primeiro, isoladamente ---
+    if hostname:
+        saida_completa += connection.send_config_set([f"hostname {hostname}"])
+        # Avisa ao Netmiko que o prompt mudou, para ele nao ficar
+        # esperando pelo prompt antigo nos proximos comandos.
+        connection.set_base_prompt()
+
+    # --- 2. Configurar as VLANs normalmente ---
+    comandos_vlan = []
+    for vlan in vlans:
+        comandos_vlan.append(f"vlan {vlan['id']}")
+        comandos_vlan.append(f"name {vlan['nome']}")
+        comandos_vlan.append("exit")
+
+    if comandos_vlan:
+        saida_completa += connection.send_config_set(comandos_vlan)
+
+    return saida_completa
 
 # ---------------------------------------------------------------------------
 # Salvar configuracao (NVRAM)
@@ -105,7 +124,7 @@ def validar_configuracao(connection, vlans_esperadas, hostname_esperado=None):
                 "', mas encontrado '" + hostname_atual + "'."
             )
 
-    saida_vlans = connection.send_command("show vlan brief")
+    saida_vlans = connection.send_command("show vlan-switch brief")
 
     for vlan in vlans_esperadas:
         vlan_id = str(vlan["id"])
