@@ -10,6 +10,8 @@ Consiste em um script Python, com frontend web em Flask, que se conecta via SSH 
 - Gerar backup local da configuração (nomeado com hostname + data/hora)
 - Validar se a configuração aplicada corresponde ao esperado, exibindo alertas em caso de divergência
 
+> 📄 Este repositório também contém o planejamento da **Parte 2** do desafio (VPN IPSec entre FortiGate e Palo Alto): veja [`plano-vpn-ipsec.md`](./plano-vpn-ipsec.md).
+
 ---
 
 ## 🗂️ Estrutura do projeto
@@ -20,6 +22,7 @@ Automacao-ML/
 │   └── index.html           # Interface web
 ├── backups/                 # Backups de configuracao gerados automaticamente
 ├── evidencias/               # Capturas de tela do funcionamento
+├── plano-vpn-ipsec.md        # Planejamento da Parte 2 (VPN IPSec Fortigate x Palo Alto)
 └── requirements.txt          # Dependencias do projeto
 
 ---
@@ -107,3 +110,4 @@ Acesse no navegador: **http://127.0.0.1:5000**
 - [x] Backup local com hostname + data/hora no nome
 - [x] Validação da configuração aplicada, com alertas de divergência
 - [x] Controle de versões via Git, com commits organizados
+
