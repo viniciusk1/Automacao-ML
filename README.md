@@ -16,15 +16,15 @@ Consiste em um script Python, com frontend web em Flask, que se conecta via SSH 
 
 ## 🗂️ Estrutura do projeto
 Automacao-ML/
-├── app.py                   # Frontend Flask (rotas web)
-├── switch_automation.py     # Backend: conexao, configuracao, backup e validacao (Netmiko)
+Automacao-ML/
+├── app.py
+├── switch_automation.py
 ├── templates/
-│   └── index.html           # Interface web
-├── backups/                 # Backups de configuracao gerados automaticamente
-├── evidencias/               # Capturas de tela do funcionamento
-├── plano-vpn-ipsec.md        # Planejamento da Parte 2 (VPN IPSec Fortigate x Palo Alto)
-└── requirements.txt          # Dependencias do projeto
-
+│   └── index.html
+├── backups/
+├── evidencias/
+├── plano-vpn-ipsec.md
+└── requirements.txt
 ---
 
 ## ⚙️ Como executar
