@@ -15,7 +15,8 @@ Consiste em um script Python, com frontend web em Flask, que se conecta via SSH 
 ---
 
 ## 🗂️ Estrutura do projeto
-Automacao-ML/
+
+```
 Automacao-ML/
 ├── app.py
 ├── switch_automation.py
@@ -25,6 +26,7 @@ Automacao-ML/
 ├── evidencias/
 ├── plano-vpn-ipsec.md
 └── requirements.txt
+```
 ---
 
 ## ⚙️ Como executar
